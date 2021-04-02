@@ -218,7 +218,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     }
                     else
                     {
-                        return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_F5) :
+                        return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_TriggerLeft) :
                             go2_input_state_button_get(gamepadState, Go2InputButton_TopLeft);
                     }
                     break;
@@ -230,7 +230,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     }
                     else
                     {
-                        return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_F6) :
+                        return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_TopRight) :
                             go2_input_state_button_get(gamepadState, Go2InputButton_TopRight);
                     }
                     break;
@@ -243,7 +243,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     else
                     {
                         return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_TopLeft) :
-                            go2_input_state_button_get(gamepadState, Go2InputButton_F5);
+                            go2_input_state_button_get(gamepadState, Go2InputButton_TriggerLeft);
                     }
                     break;
 
@@ -255,7 +255,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     else
                     {
                         return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_TopRight) :
-                            go2_input_state_button_get(gamepadState, Go2InputButton_F6);
+                            go2_input_state_button_get(gamepadState, Go2InputButton_TriggerRight);
                     }
                     break;
 

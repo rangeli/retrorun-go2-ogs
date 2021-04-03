@@ -1,11 +1,12 @@
 # retrorun-go2
-libretro frontend for ODROID-GO Advance \
-Use this for RG351P with rg351p-js2box available [here](https://github.com/christianhaitian/RG351P_virtual-gamepad).  For the RGB10, use the rgb10 branch.  For the RK2020, use the rk2020 branch.
+Lightweight libretro frontend for ODROID-GO Super developed by OtherCrashOveride.
 
 Build
 ======
 ```
-git clone https://github.com/christianhaitian/retrorun-go2.git
+git clone https://github.com/southoz/retrorun-go2.git
 make
 strip retrorun
 ```
+
+The easiest way to build a 32bit version is to use Christians pre built virtual machine image with a chroot for armhf and arm64 https://forum.odroid.com/viewtopic.php?p=306185#p306185

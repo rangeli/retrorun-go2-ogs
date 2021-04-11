@@ -790,7 +790,7 @@ int main(int argc, char *argv[])
     int c;
     int option_index = 0;
 
-	while ((c = getopt_long(argc, argv, "s:d:a:b:v:rtn", longopts, &option_index)) != -1)
+	while ((c = getopt_long(argc, argv, "s:d:a:b:v:rtun", longopts, &option_index)) != -1)
 	{
 		switch (c)
 		{

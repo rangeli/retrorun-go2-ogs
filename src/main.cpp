@@ -819,7 +819,11 @@ int main(int argc, char *argv[])
                 break;
 
             case 't':
-                opt_triggers = true;
+                opt_triggers_right = true;
+                break;
+				
+            case 'u':
+                opt_triggers_left = true;
                 break;
 
             case 'n':

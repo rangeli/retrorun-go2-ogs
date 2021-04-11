@@ -230,7 +230,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     }
                     else
                     {
-                        return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_TopRight) :
+                        return opt_triggers ? go2_input_state_button_get(gamepadState, Go2InputButton_TriggerRight) :
                             go2_input_state_button_get(gamepadState, Go2InputButton_TopRight);
                     }
                     break;

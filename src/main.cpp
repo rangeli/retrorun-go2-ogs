@@ -83,7 +83,8 @@ struct option longopts[] = {
     { "backlight", required_argument, NULL, 'b' },
     { "volume", required_argument, NULL, 'v' },
     { "restart", no_argument, NULL, 'r' },
-    { "triggers", no_argument, NULL, 't' },
+    { "triggerright", no_argument, NULL, 't' },
+    { "triggerleft", no_argument, NULL, 'u' },
     { "analog", no_argument, NULL, 'n' },
     { 0, 0, 0, 0 }};
 

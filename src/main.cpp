@@ -342,6 +342,11 @@ static bool core_environment(unsigned cmd, void* data)
                 var->value = "off";
                 return true;
             }
+            else if (strcmp(var->key, "reicast_language") == 0)
+            {
+                var->value = "English";
+                return true;
+            }
             else if (strcmp(var->key, "reicast_enable_dsp") == 0)
             {
                 var->value = "disabled";

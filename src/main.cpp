@@ -342,11 +342,6 @@ static bool core_environment(unsigned cmd, void* data)
                 var->value = "off";
                 return true;
             }
-            else if (strcmp(var->key, "reicast_language") == 0)
-            {
-                var->value = "English";
-                return true;
-            }
             else if (strcmp(var->key, "reicast_enable_dsp") == 0)
             {
                 var->value = "disabled";
@@ -383,6 +378,11 @@ static bool core_environment(unsigned cmd, void* data)
                 var->value = "auto";
                 return true;
             }
+            else if (strcmp(var->key, "reicast_language") == 0)
+            {
+                var->value = "English";
+                return true;
+            }
             else if (strcmp(var->key, "reicast_texupscale") == 0)
             {
                 var->value = "off";
@@ -393,6 +393,16 @@ static bool core_environment(unsigned cmd, void* data)
             {
                 var->value = "enabled";
                 printf("Vibration support should be on\n");
+                return true;
+            }
+            else if (strcmp(var->key, "reicast_widescreen_hack") == 0)
+            {
+                var->value = "enabled";
+                return true;
+            }
+            else if (strcmp(var->key, "reicast_widescreen_cheats") == 0)
+            {
+                var->value = "enabled";
                 return true;
             }
             else if (strcmp(var->key, "yabasanshiro_addon_cart") == 0)

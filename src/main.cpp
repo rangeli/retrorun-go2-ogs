@@ -327,6 +327,11 @@ static bool core_environment(unsigned cmd, void* data)
             //     var->value = "Recompiler";
             //     return true;
             // }
+            else if (strcmp(var->key, "reicast_analog_stick_deadzone") == 0)
+            {
+                var->value = "15%";
+                return true;
+            }
             else if (strcmp(var->key, "reicast_threaded_rendering") == 0)
             {
                 var->value = "enabled";
@@ -336,7 +341,7 @@ static bool core_environment(unsigned cmd, void* data)
             {
                 var->value = "640x480";
                 return true;
-            }            
+            }
             else if (strcmp(var->key, "reicast_anisotropic_filtering") == 0)
             {
                 var->value = "off";

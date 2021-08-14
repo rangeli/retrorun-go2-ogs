@@ -402,12 +402,12 @@ static bool core_environment(unsigned cmd, void* data)
             }
             else if (strcmp(var->key, "reicast_widescreen_hack") == 0)
             {
-                var->value = "enabled";
+                var->value = "disabled";
                 return true;
             }
             else if (strcmp(var->key, "reicast_widescreen_cheats") == 0)
             {
-                var->value = "enabled";
+                var->value = "disabled";
                 return true;
             }
             else if (strcmp(var->key, "yabasanshiro_addon_cart") == 0)

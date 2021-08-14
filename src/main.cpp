@@ -329,7 +329,7 @@ static bool core_environment(unsigned cmd, void* data)
             // }
             else if (strcmp(var->key, "reicast_analog_stick_deadzone") == 0)
             {
-                var->value = "15%";
+                var->value = "30%";
                 return true;
             }
             else if (strcmp(var->key, "reicast_threaded_rendering") == 0)

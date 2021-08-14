@@ -38,7 +38,7 @@ static go2_input_state_t* prevGamepadState;
 static go2_input_t* input;
 static bool has_triggers = false;
 
-static constexpr go2_input_button_t Hotkey = Go2InputButton_F3;
+static constexpr go2_input_button_t Hotkey = Go2InputButton_F1;
 
 
 void input_gamepad_read()
@@ -83,8 +83,8 @@ void core_input_poll(void)
 	input_gamepad_read();
     go2_input_battery_read(input, &batteryState);
 
-    if (go2_input_state_button_get(gamepadState, Go2InputButton_F1) == ButtonState_Pressed &&
-        go2_input_state_button_get(gamepadState, Go2InputButton_F2) == ButtonState_Pressed)
+    if (go2_input_state_button_get(gamepadState, Go2InputButton_F3) == ButtonState_Pressed &&
+        go2_input_state_button_get(gamepadState, Go2InputButton_F4) == ButtonState_Pressed)
     {
         input_exit_requested = true;
     }
@@ -180,11 +180,11 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     break;
 
                 case RETRO_DEVICE_ID_JOYPAD_SELECT:
-                    return go2_input_state_button_get(gamepadState, Go2InputButton_F1);
+                    return go2_input_state_button_get(gamepadState, Go2InputButton_F3);
                     break;
 
                 case RETRO_DEVICE_ID_JOYPAD_START:
-                    return go2_input_state_button_get(gamepadState, Go2InputButton_F2);
+                    return go2_input_state_button_get(gamepadState, Go2InputButton_F4);
                     break;
 
                 case RETRO_DEVICE_ID_JOYPAD_UP:

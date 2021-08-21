@@ -48,7 +48,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <drm/drm_fourcc.h>
 #include <sys/time.h>
 #include <go2/input.h>
-#include <exception>
 #include <cctype>
 
 #define RETRO_DEVICE_ATARI_JOYSTICK RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 1)
@@ -850,7 +849,7 @@ int main(int argc, char *argv[])
 
 	int c;
 	int option_index = 0;
-try {
+
 	while ((c = getopt_long(argc, argv, "s:d:a:b:v:rtunl:x:w", longopts, &option_index)) != -1)
 	{
 		//std::cout << "Proccesing parameter: " << (char) c << ", optarg: " << optarg << "\n" << std::flush;
@@ -920,11 +919,6 @@ try {
 		}
 		std::cout << "\n" << std::flush;
 	}
-
-} catch (std::exception& e)
-{
-  std::cout << e.what() << '\n' << std::flush;
-}
 
     printf("opt_save='%s', opt_systemdir='%s', opt_aspect=%f, opt_wide_reicast='%s', opt_language_reicast='%s', opt_device='%s'\n", opt_savedir, opt_systemdir, opt_aspect, (opt_wide_reicast ? "true" : "false"), opt_language_reicast, opt_device);
 

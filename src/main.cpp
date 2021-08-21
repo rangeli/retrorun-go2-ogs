@@ -35,6 +35,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
+#include <ostream>
 #include <exception>
 #include <getopt.h>
 #include <map>
@@ -46,7 +48,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <drm/drm_fourcc.h>
 #include <sys/time.h>
 #include <go2/input.h>
-
+#include <exception>
+#include <cctype>
 
 #define RETRO_DEVICE_ATARI_JOYSTICK RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 1)
 #define RETRO_ENVIRONMENT_GET_PREFERRED_HW_RENDER 56
@@ -72,12 +75,15 @@ int opt_volume = -1;
 bool opt_restart = false;
 const char* arg_core = "";
 const char* arg_rom = "";
+const char* opt_language_reicast = "Default";
+bool opt_wide_reicast = false;
+const char* opt_device = "rgb10maxtop";
 
 typedef std::map<std::string, std::string> varmap_t ;
 varmap_t variables;
 
 struct option longopts[] = {
-	{ "savedir", required_argument, NULL, 's' },
+    { "savedir", required_argument, NULL, 's' },
     { "systemdir", required_argument, NULL, 'd' },
     { "aspect", required_argument, NULL, 'a' },
     { "backlight", required_argument, NULL, 'b' },
@@ -86,6 +92,9 @@ struct option longopts[] = {
     { "triggerright", no_argument, NULL, 't' },
     { "triggerleft", no_argument, NULL, 'u' },
     { "analog", no_argument, NULL, 'n' },
+    { "language_reicast", required_argument, NULL, 'l' },
+    { "wide_reicast", no_argument, NULL, 'w' },
+    { "device", required_argument, NULL, 'x' },
     { 0, 0, 0, 0 }};
 
 
@@ -138,8 +147,8 @@ static void core_log(enum retro_log_level level, const char* fmt, ...)
 		"wrn",
 		"err"
 	};
-	
-    va_list va;
+
+	va_list va;
 
 	va_start(va, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, va);
@@ -330,6 +339,10 @@ static bool core_environment(unsigned cmd, void* data)
             else if (strcmp(var->key, "reicast_analog_stick_deadzone") == 0)
             {
                 var->value = "15%";
+                if ((device == RGB10_MAX_TOP) || (device == RGB10_MAX_NATIVE))
+                    var->value = "30%";
+
+                std::cout << "reicast_analog_stick_deadzone: '" << var->value << "'\n";
                 return true;
             }
             else if (strcmp(var->key, "reicast_threaded_rendering") == 0)
@@ -385,7 +398,8 @@ static bool core_environment(unsigned cmd, void* data)
             }
             else if (strcmp(var->key, "reicast_language") == 0)
             {
-                var->value = "English";
+                var->value = opt_language_reicast;
+                std::cout << "reicast_language_reicast: '" << var->value << "'\n";
                 return true;
             }
             else if (strcmp(var->key, "reicast_texupscale") == 0)
@@ -403,11 +417,19 @@ static bool core_environment(unsigned cmd, void* data)
             else if (strcmp(var->key, "reicast_widescreen_hack") == 0)
             {
                 var->value = "disabled";
+                if (opt_wide_reicast)
+                    var->value = "enabled";
+
+                std::cout << "reicast_widescreen_hack: '" << var->value << "'\n";
                 return true;
             }
             else if (strcmp(var->key, "reicast_widescreen_cheats") == 0)
             {
                 var->value = "disabled";
+                if (opt_wide_reicast)
+                    var->value = "enabled";
+
+                std::cout << "reicast_widescreen_cheats: '" << var->value << "'\n";
                 return true;
             }
             else if (strcmp(var->key, "yabasanshiro_addon_cart") == 0)
@@ -514,10 +536,11 @@ static void core_load(const char* sofile)
 	g_retro.handle = dlopen(sofile, RTLD_LAZY);
 
 	if (!g_retro.handle)
-    {        
+	{
 		printf("Failed to load core: %s\n", dlerror());
-        throw std::exception();
-    }
+		std::cout << std::flush; // force flush
+		throw std::exception();
+	}
 
 	dlerror();
 
@@ -534,8 +557,8 @@ static void core_load(const char* sofile)
 	load_retro_sym(retro_serialize_size);
 	load_retro_sym(retro_serialize);
 	load_retro_sym(retro_unserialize);
-    load_retro_sym(retro_get_memory_data);
-    load_retro_sym(retro_get_memory_size);
+	load_retro_sym(retro_get_memory_data);
+	load_retro_sym(retro_get_memory_size);
 
 	load_sym(set_environment, retro_set_environment);
 	load_sym(set_video_refresh, retro_set_video_refresh);
@@ -556,19 +579,20 @@ static void core_load(const char* sofile)
 
 	printf("Core loaded\n");
 
-    g_retro.retro_set_controller_port_device(0, RETRO_DEVICE_JOYPAD);
+	g_retro.retro_set_controller_port_device(0, RETRO_DEVICE_JOYPAD);
 
-    struct retro_system_info system = {
+	struct retro_system_info system = {
 		0, 0, 0, false, false
 	};
-    g_retro.retro_get_system_info(&system);
-    printf("core_load: library_name='%s'\n", system.library_name);
 
-    if (strcmp(system.library_name, "Atari800") == 0)
-    {
-        Retrorun_Core = RETRORUN_CORE_ATARI800;
-        g_retro.retro_set_controller_port_device(0, RETRO_DEVICE_ATARI_JOYSTICK);
-    }
+	g_retro.retro_get_system_info(&system);
+	printf("core_load: library_name='%s'\n", system.library_name);
+
+	if (strcmp(system.library_name, "Atari800") == 0)
+	{
+		Retrorun_Core = RETRORUN_CORE_ATARI800;
+		g_retro.retro_set_controller_port_device(0, RETRO_DEVICE_ATARI_JOYSTICK);
+	}
 }
 
 static void core_load_game(const char * filename)
@@ -610,10 +634,11 @@ static void core_load_game(const char * filename)
 	}
 
 	if (!g_retro.retro_load_game( & info))
-    {
+	{
 		printf("The core failed to load the content.\n");
-        abort();
-    }
+		std::cout << std::flush; // force flush
+		abort();
+	}
 
 	g_retro.retro_get_system_av_info( & av);
 	video_configure(&av.geometry);
@@ -623,7 +648,8 @@ static void core_load_game(const char * filename)
 
 	libc_error:
 		printf("Failed to load content '%s'\n", filename);
-        abort();
+		std::cout << std::flush; // force flush
+		abort();
 }
 
 static void core_unload()
@@ -789,84 +815,128 @@ static void SaveSram(const char* saveName)
     fclose(file);
 }
 
+void configure_device()
+{
+	if (strcmp(opt_device, "ogs") == 0)
+		device = OGS;
+	else if (strcmp(opt_device, "oga") == 0)
+		device = OGA;
+	else if (strcmp(opt_device, "oga1") == 0)
+		device = OGA_1;
+	else if (strcmp(opt_device, "rgb10maxnative") == 0)
+		device = RGB10_MAX_NATIVE;
+	else // rgb10maxtop
+		device = RGB10_MAX_TOP;
+}
+
 int main(int argc, char *argv[])
 {
-    //printf("argc=%d, argv=%p\n", argc, argv);
+    printf("Executing retrorun\n");
 
 
     // Init
 #if 0
 
-	if (argc < 3)
+    if (argc < 3)
     {
-		printf("Usage: %s <core> <game>", argv[0]);
+        printf("Usage: %s <core> <game>", argv[0]);
         exit(1);
     }
 
-	core_load(argv[1]);
+    core_load(argv[1]);
     core_load_game(argv[2]);
 
 #else
 
-    int c;
-    int option_index = 0;
-
-	while ((c = getopt_long(argc, argv, "s:d:a:b:v:rtun", longopts, &option_index)) != -1)
+	int c;
+	int option_index = 0;
+try {
+	while ((c = getopt_long(argc, argv, "s:d:a:b:v:rtunl:x:w", longopts, &option_index)) != -1)
 	{
+		//std::cout << "Proccesing parameter: " << (char) c << ", optarg: " << optarg << "\n" << std::flush;
+		std::cout << "Proccesing parameter: " << (char) c;
 		switch (c)
 		{
 			case 's':
+				std::cout << ", optarg: " << optarg;
 				opt_savedir = optarg;
 				break;
 
 			case 'd':
+				std::cout << ", optarg: " << optarg;
 				opt_systemdir = optarg;
 				break;
 
 			case 'a':
+				std::cout << ", optarg: " << optarg;
 				opt_aspect = atof(optarg);
 				break;
 
-            case 'b':
-                opt_backlight = atoi(optarg);
-                break;
+			case 'b':
+				std::cout << ", optarg: " << optarg;
+				opt_backlight = atoi(optarg);
+				break;
             
-            case 'v':
-                opt_volume = atoi(optarg);
-                break;
+			case 'v':
+				std::cout << ", optarg: " << optarg;
+				opt_volume = atoi(optarg);
+				break;
 
-            case 'r':
-                opt_restart = true;
-                break;
+			case 'r':
+				opt_restart = true;
+				break;
 
-            case 't':
-                opt_triggers_right = true;
-                break;
-				
-            case 'u':
-                opt_triggers_left = true;
-                break;
+			case 't':
+				opt_triggers_right = true;
+				break;
 
-            case 'n':
-                Retrorun_UseAnalogStick = true;
-                break;
+			case 'u':
+				opt_triggers_left = true;
+				break;
+
+			case 'n':
+				Retrorun_UseAnalogStick = true;
+				break;
+
+			case 'l':
+				std::cout << ", optarg: " << optarg;
+				*optarg = toupper(*optarg); // uppercase the first char
+				opt_language_reicast = optarg;
+				break;
+
+			case 'w':
+				opt_wide_reicast = true;
+				break;
+
+			case 'x':
+				std::cout << ", optarg: " << optarg;
+				opt_device = optarg;
+				break;
 
 			default:
 				printf("Unknown option. '%s'\n", longopts[option_index].name);
-                exit(EXIT_FAILURE);
+				std::cout << std::flush; // force flush
+				exit(EXIT_FAILURE);
 		}
+		std::cout << "\n" << std::flush;
 	}
 
-    printf("opt_save='%s', opt_systemdir='%s', opt_aspect=%f\n", opt_savedir, opt_systemdir, opt_aspect);
+} catch (std::exception& e)
+{
+  std::cout << e.what() << '\n' << std::flush;
+}
 
+    printf("opt_save='%s', opt_systemdir='%s', opt_aspect=%f, opt_wide_reicast='%s', opt_language_reicast='%s', opt_device='%s'\n", opt_savedir, opt_systemdir, opt_aspect, (opt_wide_reicast ? "true" : "false"), opt_language_reicast, opt_device);
 
     int remaining_args = argc - optind;
+
     int remaining_index = optind;
     printf("remaining_args=%d\n", remaining_args);
 
     if (remaining_args < 2)
     {
-		printf("Usage: %s [-s savedir] [-d systemdir] [-a aspect] core rom\n\n", argv[0]);
+        printf("Usage: %s [-s savedir] [-d systemdir] [-a aspect] core rom\n\n", argv[0]);
+        std::cout << std::flush; // force flush
         exit(EXIT_FAILURE);
     }
 
@@ -882,7 +952,11 @@ int main(int argc, char *argv[])
     arg_core = argv[remaining_index++];
     arg_rom = argv[remaining_index++];
 
-	core_load(arg_core);
+    printf("Configuring device inputs for '%s'\n", opt_device);
+    configure_device();
+    configure_input_buttons_by_device();
+
+    core_load(arg_core);
     core_load_game(arg_rom);
 
 #endif
@@ -896,6 +970,7 @@ int main(int argc, char *argv[])
     if (go2_input_state_button_get(gamepadState, Go2InputButton_F1) == ButtonState_Pressed)
     {
         printf("Forcing restart due to button press (F1).\n");
+				std::cout << std::flush; // force flush
         opt_restart = true;
     }
    
@@ -929,7 +1004,6 @@ int main(int argc, char *argv[])
     }
 
     LoadSram(sramPath);
-
 
     printf("Entering render loop.\n");
 
@@ -968,7 +1042,7 @@ int main(int argc, char *argv[])
         ++totalFrames;
 
         double seconds = (endTime.tv_sec - startTime.tv_sec);
-	    double milliseconds = ((double)(endTime.tv_usec - startTime.tv_usec)) / 1000000.0;
+        double milliseconds = ((double)(endTime.tv_usec - startTime.tv_usec)) / 1000000.0;
 
         elapsed += seconds + milliseconds;
 
@@ -992,7 +1066,7 @@ int main(int argc, char *argv[])
 
     core_unload();
 
-    printf("Exiting.\n");
+    std::cout << "Exiting.\n" << std::flush;
 
     return 0;
 }

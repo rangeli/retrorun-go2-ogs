@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef VIDEO_H
+#define VIDEO_H
+
 /*
 retrorun-go2 - libretro frontend for the ODROID-GO Advance
 Copyright (C) 2020  OtherCrashOverride
@@ -35,3 +38,4 @@ void video_deinit();
 uintptr_t core_video_get_current_framebuffer();
 void core_video_refresh(const void * data, unsigned width, unsigned height, size_t pitch);
 
+#endif // VIDEO_H

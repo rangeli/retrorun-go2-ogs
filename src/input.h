@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef INPUT_H
+#define INPUT_H
+
 /*
 retrorun-go2 - libretro frontend for the ODROID-GO Advance
 Copyright (C) 2020  OtherCrashOverride
@@ -29,7 +32,10 @@ extern bool input_reset_requested;
 extern bool input_ffwd_requested;
 extern bool input_pause_requested;
 
+void configure_input_buttons_by_device();
 void input_gamepad_read();
 go2_input_state_t* input_gampad_current_get();
 void core_input_poll(void);
 int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigned id);
+
+#endif // INPUT_H

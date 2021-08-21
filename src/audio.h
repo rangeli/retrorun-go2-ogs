@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef AUDIO_H
+#define AUDIO_H
+
 /*
 retrorun-go2 - libretro frontend for the ODROID-GO Advance
 Copyright (C) 2020  OtherCrashOverride
@@ -25,3 +28,5 @@ void audio_init(int freq);
 void audio_deinit();
 void core_audio_sample(int16_t left, int16_t right);
 size_t core_audio_sample_batch(const int16_t * data, size_t frames);
+
+#endif // AUDIO_H

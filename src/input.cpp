@@ -38,8 +38,28 @@ static go2_input_state_t* prevGamepadState;
 static go2_input_t* input;
 static bool has_triggers = false;
 
-static constexpr go2_input_button_t Hotkey = Go2InputButton_F3;
+static go2_input_button_t select_button;
+static go2_input_button_t start_button;
+static go2_input_button_t hotkey_button;
 
+void configure_input_buttons_by_device()
+{
+	// default OGS, OGA, RGB10_MAX_TOP
+	select_button = Go2InputButton_F1;
+	start_button = Go2InputButton_F2;
+	hotkey_button = Go2InputButton_F3;
+
+	if (device == OGA_1)
+	{
+		start_button = Go2InputButton_F6;
+	}
+	else if (device == RGB10_MAX_NATIVE)
+	{
+		hotkey_button = Go2InputButton_F1;
+		select_button = Go2InputButton_F3;
+		start_button = Go2InputButton_F4;
+	}
+}
 
 void input_gamepad_read()
 {
@@ -83,8 +103,8 @@ void core_input_poll(void)
 	input_gamepad_read();
     go2_input_battery_read(input, &batteryState);
 
-    if (go2_input_state_button_get(gamepadState, Go2InputButton_F1) == ButtonState_Pressed &&
-        go2_input_state_button_get(gamepadState, Go2InputButton_F2) == ButtonState_Pressed)
+    if (go2_input_state_button_get(gamepadState, select_button) == ButtonState_Pressed &&
+        go2_input_state_button_get(gamepadState, start_button) == ButtonState_Pressed)
     {
         input_exit_requested = true;
     }
@@ -94,7 +114,7 @@ void core_input_poll(void)
     //     screenshot_requested = true;
     // }
 
-    if (go2_input_state_button_get(gamepadState, Hotkey) == ButtonState_Pressed)
+    if (go2_input_state_button_get(gamepadState, hotkey_button) == ButtonState_Pressed)
     {
         if (go2_input_state_button_get(gamepadState, Go2InputButton_TopRight) == ButtonState_Pressed &&
             go2_input_state_button_get(prevGamepadState, Go2InputButton_TopRight) == ButtonState_Released)
@@ -130,7 +150,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
     // if (port || index || device != RETRO_DEVICE_JOYPAD)
     //         return 0;
 
-    if (go2_input_state_button_get(gamepadState, Hotkey) == ButtonState_Pressed)
+    if (go2_input_state_button_get(gamepadState, hotkey_button) == ButtonState_Pressed)
         return 0;
 
     if (!Retrorun_UseAnalogStick)
@@ -180,11 +200,11 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     break;
 
                 case RETRO_DEVICE_ID_JOYPAD_SELECT:
-                    return go2_input_state_button_get(gamepadState, Go2InputButton_F1);
+                    return go2_input_state_button_get(gamepadState, select_button);
                     break;
 
                 case RETRO_DEVICE_ID_JOYPAD_START:
-                    return go2_input_state_button_get(gamepadState, Go2InputButton_F2);
+                    return go2_input_state_button_get(gamepadState, start_button);
                     break;
 
                 case RETRO_DEVICE_ID_JOYPAD_UP:

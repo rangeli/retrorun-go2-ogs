@@ -3,8 +3,6 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <go2/input.h>
-
 enum RETRORUN_CORE_TYPE
 {
 		RETRORUN_CORE_UNKNOWN = 0,

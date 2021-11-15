@@ -195,7 +195,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     return go2_input_state_button_get(gamepadState, Go2InputButton_B);
                     break;
                 
-                case RETRO_DEVICE_ID_JOYPAD_Y:
+                case RETRO_DEVICE_ID_JOYPAD_A:
                     return go2_input_state_button_get(gamepadState, Go2InputButton_Y);
                     break;
 
@@ -223,7 +223,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     return go2_input_state_button_get(gamepadState, Go2InputButton_DPadRight);
                     break;
 
-                case RETRO_DEVICE_ID_JOYPAD_A:
+                case RETRO_DEVICE_ID_JOYPAD_Y:
                     return go2_input_state_button_get(gamepadState, Go2InputButton_A);
                     break;
 
@@ -231,7 +231,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     return go2_input_state_button_get(gamepadState, Go2InputButton_X);
                     break;
 
-                case RETRO_DEVICE_ID_JOYPAD_L:
+                case RETRO_DEVICE_ID_JOYPAD_R:
                     if (has_triggers)
                     {
                         return opt_triggers_left ? go2_input_state_button_get(gamepadState, Go2InputButton_TriggerLeft) :
@@ -244,7 +244,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     }
                     break;
 
-                case RETRO_DEVICE_ID_JOYPAD_R:
+                case RETRO_DEVICE_ID_JOYPAD_L:
                     if (has_triggers)
                     {
                         return opt_triggers_right ? go2_input_state_button_get(gamepadState, Go2InputButton_TriggerRight) :
@@ -257,7 +257,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     }
                     break;
 
-                case RETRO_DEVICE_ID_JOYPAD_L2:
+                case RETRO_DEVICE_ID_JOYPAD_R2:
                     if (has_triggers)
                     {
 		        return opt_triggers_left ? go2_input_state_button_get(gamepadState, Go2InputButton_TopLeft) :
@@ -270,7 +270,7 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     }
                     break;
 
-                case RETRO_DEVICE_ID_JOYPAD_R2:
+                case RETRO_DEVICE_ID_JOYPAD_L2:
                     if (has_triggers)
                     {
 			return opt_triggers_right ? go2_input_state_button_get(gamepadState, Go2InputButton_TopRight) :

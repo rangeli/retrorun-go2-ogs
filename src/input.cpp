@@ -224,12 +224,36 @@ int16_t core_input_state(unsigned port, unsigned device, unsigned index, unsigne
                     break;
 
                 case RETRO_DEVICE_ID_JOYPAD_Y:
-                    return go2_input_state_button_get(gamepadState, Go2InputButton_A);
+                {
+                    go2_button_state_t button_state = go2_input_state_button_get(gamepadState, Go2InputButton_A);
+                    if (Retrorun_UseAnalogStick && !button_state)
+                    {
+                        go2_thumb_t thumb = go2_input_state_thumbstick_get(gamepadState, Go2InputThumbstick_Right);
+                        return (thumb.x > 0.1f) ? ButtonState_Pressed: ButtonState_Released;
+                    }
+                    else
+                    {
+                        return button_state;
+                    }
+
                     break;
+                }
 
                 case RETRO_DEVICE_ID_JOYPAD_X:
-                    return go2_input_state_button_get(gamepadState, Go2InputButton_X);
+                {
+                    go2_button_state_t button_state = go2_input_state_button_get(gamepadState, Go2InputButton_X);
+                    if (Retrorun_UseAnalogStick && !button_state)
+                    {
+                        go2_thumb_t thumb = go2_input_state_thumbstick_get(gamepadState, Go2InputThumbstick_Right);
+                        return (thumb.x < -0.1f) ? ButtonState_Pressed: ButtonState_Released;
+                    }
+                    else
+                    {
+                        return button_state;
+                    }
+
                     break;
+                }
 
                 case RETRO_DEVICE_ID_JOYPAD_R:
                     if (has_triggers)
